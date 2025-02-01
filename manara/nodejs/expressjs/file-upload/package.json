@@ -1,0 +1,27 @@
+{
+    "name": "cloudia",
+    "version": "1.0.0",
+    "description": "A Cloud Storage web app",
+    "main": "app.js",
+    "scripts": {
+        "start": "node --watch -r dotenv/config app.js"
+    },
+    "keywords": [],
+    "author": "Mostafa Ahmed",
+    "license": "MIT",
+    "dependencies": {
+        "@prisma/client": "^6.3.0",
+        "@quixo3/prisma-session-store": "^3.1.13",
+        "bcrypt": "^5.1.1",
+        "dotenv": "^16.4.7",
+        "ejs": "^3.1.10",
+        "express": "^4.21.2",
+        "express-session": "^1.18.1",
+        "multer": "^1.4.5-lts.1",
+        "passport": "^0.7.0",
+        "passport-local": "^1.0.0"
+    },
+    "devDependencies": {
+        "prisma": "^6.3.0"
+    }
+}

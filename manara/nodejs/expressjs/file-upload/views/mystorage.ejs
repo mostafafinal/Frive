@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/mystorage.css">
+    <title>Cloudia</title>
+</head>
+<body>
+    <%- include("partials/feedbackMessage.ejs") %>
+    <header>
+        <div>
+            <img src="/icons/logo.svg" alt="logo">
+            <h3>Cloudia</h3>
+        </div>
+        <h3 class="user"><%= locals.currentUser.email %> storage</h3>
+        <a href="/logout">LogOut</a>
+    </header>
+    <%- include("partials/phoneForms.ejs") %>
+    <div class="grid">
+    <div class="dashboard">
+        <div>
+            <form action="/mystorage/uploadfile/<%= folderId %>" method="post" enctype="multipart/form-data">
+                <h3>Upload File</h3>
+                <input type="file" name="files" id="files" multiple>
+                <input type="submit" value="Upload" id="uploadFiles">
+            </form>
+            <div class="uploading">
+                <h3>Uploading Files...</h3>
+                <img src="/icons/logo.svg" alt="logo" class="loading">
+                <i>be patient</i>
+            </div>
+        </div>
+    <!-- Create folder with his parent folder id as a param -->
+    <form action="/createFolder/<%= folderId %>" method="post">
+        <h3>Create Folder</h3>
+        <label for="foldername">Folder Name</label>
+        <input type="text" name="foldername" id="foldername" placeholder="my fancy folder" required>
+        <input type="submit" value="Create">
+    </form>
+    <ul class="nav">
+        <li><a href="/mystorage">My storage<% if(folderName === 'Main'){%> <img src="/icons/folder_open.svg"> <%}%></a></li>
+        <% locals.allFolders.forEach(folder => { %>
+            <% if(folder.name === 'Main') return; %>
+            <li><a href="/mystorage/folder/<%= folder.id %>"><%= folder.name %><% if(folderName === folder.name){%> <img src="/icons/folder_open.svg"> <%}%></a></li>
+        <% }) %>
+    </ul>
+    </div>
+    <div>
+        <h2><%= folderName === 'Main' ? 'My storage' : folderName %><img src="/icons/folder.svg" alt="folder icon"></h2>
+        <div class="foldersContainer">
+        <% locals.subfolders.forEach(folder => { %>
+            <div style="display: flex; margin: 1rem;">
+                <a href="/mystorage/folder/<%= folder.id %>" class="folder">
+                    <img src="/icons/folder_open.svg" alt="">
+                    <%= folder.name %>
+                </a>
+                <div class="edit">
+                <form action="/deleteFolder/<%= folder.id %>" method="post">
+                    <input type="image" src="/icons/delete.svg" alt="Delete" width="15" height="15">
+                </form>
+                <form action="/updateFolderName/<%= folder.id %>" method="post">
+                    <button id="openRename">
+                        <img src="/icons/rename.svg" alt="rename">
+                    </button>
+                    <div class="rename_box" style="display: none;">
+                        <input type="text" name="newName" id="newName" value="<%= folder.name %>" required>
+                        <input type="submit" value="Rename">
+                    </div>
+                </form>
+                <form action="/updateFolderLocation/<%= folder.id %>" method="post">
+                    <button id="openMove">
+                        <img src="/icons/move.svg" alt="move">
+                    </button>
+                        <div class="move_box" style="display: none;">
+                        <select name="newParentId" id="newParentId">
+                            <% locals.allFolders.forEach(fold => { %>
+                                <% if(fold.id !== folder.id) { %>
+                                    <option value="<%= fold.id %>"><%= fold.name %></option>
+                                    <% } %>
+                                    <%  }); %>
+                                </select>
+                                <input type="submit" value="Move">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        <div class="filesContainer">
+        <% locals.files.forEach(file => { %>
+            <div style="display: flex; margin: 1rem;">
+                <a href="/mystorage/file/<%= file.id %>" class="folder">
+                    <img src="<%= fileIcons[file.fileType] %>" alt="">
+                    <%= file.name %>
+                </a>
+                <div class="edit">
+                <form action="/deleteFile/<%= file.id %>" method="post">
+                    <input type="image" src="/icons/delete.svg" alt="Delete" width="15" height="15">
+                </form>
+                <form action="/updateFileName/<%= file.id %>" method="post">
+                    <button id="openRename">
+                        <img src="/icons/rename.svg" alt="rename">
+                    </button>
+                    <div class="rename_box" style="display: none;">
+                        <input type="text" name="newFileName" id="newFileName" value="<%= file.name %>" required>
+                        <input type="submit" value="Rename">
+                    </div>
+                </form>
+                <form action="/updateFileLocation/<%= file.id %>" method="post">
+                    <button id="openMove">
+                        <img src="/icons/move.svg" alt="move">
+                    </button>
+                    <div class="move_box" style="display: none;">
+
+                        <select name="newFolderId" id="newFolderId">
+                            <% locals.allFolders.forEach(fold => { %>
+                                    <option value="<%= fold.id %>"><%= fold.name %></option>
+                                    <%  }); %>
+                                </select>
+                                <input type="submit" value="Move">
+                    </div>
+                </form>
+                </div>
+            </div>
+       <% }); %>
+    </div>
+    </div>
+ </div>
+ <script>
+    const btnRename = document.querySelectorAll('#openRename');
+    const btnMove = document.querySelectorAll('#openMove');
+
+    const uploadFilesBtn = document.querySelector('#uploadFiles');
+    const uploadingFeedback = document.querySelector('.uploading');
+
+    const btns = [btnRename, btnMove];
+
+    uploadFilesBtn.addEventListener('click', () => {
+        uploadFilesBtn.parentElement.style.display = 'none';
+        uploadingFeedback.style.display = 'flex';
+    });
+
+    function addEvent(element){
+        const sibling = element.nextElementSibling;
+
+        element.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            if(sibling.style.display === 'none') {
+                sibling.style.display = 'block';
+                return;
+            }
+
+            sibling.style.display = 'none';
+        });
+    }
+
+    btns.forEach(btn => {
+        btn.forEach(bt => {addEvent(bt)});
+    });
+ </script>
+</body>
+</html>

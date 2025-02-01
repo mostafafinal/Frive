@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/mystorage.css">
+    <title>Cloudia</title>
+</head>
+<body>
+    <header>
+        <div>
+            <img src="/icons/logo.svg" alt="logo">
+            <h3>Cloudia</h3>
+        </div>
+        <h3 class="user"><%= locals.currentUser.email %> storage</h3>
+        <a href="/logout">LogOut</a>
+    </header>
+    <%- include("partials/navFile.ejs") %>
+    <div class="grid">
+    <div class="dashboard">
+        <h4 style="margin-bottom: 1rem;">Folder Navs</h4>
+        <ul class="nav">
+            <li><a href="/mystorage">My storage</a></li>
+            <% locals.allFolders.forEach(folder => { %>
+                <% if(folder.name === 'Main') return; %>
+                <li><a href="/mystorage/folder/<%= folder.id %>"><%= folder.name %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+    <div class="fileBox">
+        <h2 class="fileName"><%= file.name %></h2>
+        <img src="<%= fileIcons[file.fileType] %>" alt="" class="fileImage">
+        <div class="dataBox">
+            <div class="fileData">
+                <p>Type: <%= file.fileType %></p>    
+                <p><%= parseFloat(file.size / 1048576).toFixed(2) %> MB</p>
+            </div>
+            <div>
+                <a href="<%= file.fileUrl %>" download="<%= file.name %>" target="_blank" class="buttonType">Download</a>
+            </div>
+        </div>
+    </div>
+    </div>
+ </div>
+</body>
+</html>
