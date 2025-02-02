@@ -1,23 +1,7 @@
 const { body, check } = require("express-validator");
-const dbQuery = require("../models/queries");
+const { findUserByEmail } = require("../models/queries");
 
 const signupValidation = [
-    body("firstName")
-        .trim()
-        .notEmpty()
-        .withMessage("first name is empty")
-        .bail()
-        .isAlpha()
-        .withMessage("first name needs to be alphapetic")
-        .bail(),
-    body("lastName")
-        .trim()
-        .notEmpty()
-        .withMessage("last name is empty")
-        .bail()
-        .isAlpha()
-        .withMessage("last name needs to be alphapetic")
-        .bail(),
     body("email")
         .trim()
         .notEmpty()
@@ -27,7 +11,7 @@ const signupValidation = [
         .withMessage("incorrect email format")
         .bail()
         .custom(async (value) => {
-            const existedUser = await dbQuery.findUserByEmail(value);
+            const existedUser = await findUserByEmail(value);
 
             if (existedUser) throw new Error("user already existed");
         })
@@ -40,7 +24,7 @@ const signupValidation = [
         .isLength({ min: 8, max: 15 })
         .withMessage("min password length is 8, max length is 15")
         .bail(),
-    check("confirmPassword")
+    check("r-password")
         .trim()
         .notEmpty()
         .withMessage("password name is empty")
