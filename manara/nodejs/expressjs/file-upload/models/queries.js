@@ -25,6 +25,11 @@ const addUser = async (userData) => {
             data: {
                 email: userData.email,
                 password: userData.hashedPassword,
+                folders: {
+                    create: {
+                        name: "Main",
+                    },
+                },
             },
         });
     } catch (err) {
@@ -34,7 +39,6 @@ const addUser = async (userData) => {
 
 const loginUser = async (useremail) => {
     try {
-        console.log(useremail);
         if (!useremail) throw new Error("user email isn't provided");
 
         const user = await prisma.user.findFirst({
@@ -53,7 +57,6 @@ const loginUser = async (useremail) => {
 
 const findUserById = async (userId) => {
     try {
-        console.log(userId);
         if (!userId || typeof userId !== "number")
             throw new Error("invalid user id");
 
@@ -71,4 +74,96 @@ const findUserById = async (userId) => {
     }
 };
 
-module.exports = { findUserByEmail, addUser, loginUser, findUserById };
+const getMainFolder = async (userId) => {
+    if (!userId) throw new Error("user id's not provided");
+
+    const folder = await prisma.folder.findFirst({
+        where: {
+            ownerId: userId,
+            parentId: null,
+        },
+        include: {
+            files: true,
+            subfolders: true,
+        },
+    });
+
+    return folder;
+};
+
+const getAllFolders = async () => {
+    const folders = await prisma.folder.findMany();
+
+    return folders;
+};
+
+const openFolderById = async (folderId) => {
+    if (!folderId) throw new Error("folder id's not provided");
+
+    const folder = await prisma.folder.findUnique({
+        where: {
+            id: folderId,
+        },
+        include: {
+            subfolders: true,
+            files: true,
+        },
+    });
+
+    return folder;
+};
+
+const newFolder = async (folderId, userId, folderName) => {
+    if (!folderId || !folderName || !userId)
+        throw new Error("either folder id or name are not provided");
+
+    await prisma.folder.create({
+        data: {
+            name: folderName,
+            parentId: folderId,
+            ownerId: userId,
+        },
+    });
+};
+
+const updateFolderName = async (folderId, newFolderName) => {
+    if (!folderId || !newFolderName)
+        throw new Error("either folder id or name aren't provided");
+
+    await prisma.folder.update({
+        data: {
+            name: newFolderName,
+        },
+        where: {
+            id: folderId,
+        },
+    });
+};
+
+const deleteFolder = async (folderId) => {
+    try {
+        if (!folderId || typeof folderId !== "number")
+            throw new Error("folder id's not provided");
+
+        await prisma.folder.delete({
+            where: {
+                id: folderId,
+            },
+        });
+    } catch (err) {
+        console.error(`DB ERROR\n${err}`);
+    }
+};
+
+module.exports = {
+    findUserByEmail,
+    addUser,
+    loginUser,
+    findUserById,
+    getMainFolder,
+    getAllFolders,
+    openFolderById,
+    newFolder,
+    updateFolderName,
+    deleteFolder,
+};

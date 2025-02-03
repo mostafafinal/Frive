@@ -44,17 +44,4 @@ const loginGet = (req, res, next) => {
         next(err);
     }
 };
-
-const mystorageGet = (req, res, next) => {
-    try {
-        if (!req.isAuthenticated()) throw new Error("user's not authenticated");
-
-        res.render("mystorage");
-    } catch (err) {
-        res.redirect("/login");
-
-        next(err);
-    }
-};
-
-module.exports = { indexGet, signupGet, loginGet, signupPost, mystorageGet };
+module.exports = { indexGet, signupGet, loginGet, signupPost };

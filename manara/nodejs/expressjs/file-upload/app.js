@@ -4,6 +4,7 @@ const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./config/prismaClient");
 const passport = require("passport");
 const indexRouter = require("./routes/indexRouter");
+const storageRouter = require("./routes/storageRouter");
 
 /**
  * GENERAL SETUP
@@ -45,6 +46,7 @@ app.use(passport.session());
 /**
  * Routes SETUP
  */
+app.use("/mystorage", storageRouter);
 app.use("/", indexRouter);
 
 /**
