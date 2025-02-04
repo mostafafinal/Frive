@@ -24,7 +24,7 @@ storageRouter.get("/logout", (req, res, next) => {
 
 storageRouter.get("/folder/:id", populateUser, storageController.openFolderGet);
 
-storageRouter.get(
+storageRouter.post(
     "/createFolder/:folderId",
     storageController.createFolderPost
 );

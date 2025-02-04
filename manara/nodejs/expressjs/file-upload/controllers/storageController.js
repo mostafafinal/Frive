@@ -51,14 +51,14 @@ const openFolderGet = async (req, res, next) => {
 const createFolderPost = async (req, res, next) => {
     try {
         if (!req.isAuthenticated()) throw new Error("user's not authenticated");
-
+        console.log(req.params);
         const { folderId } = req.params;
         const { foldername } = req.body;
         const userId = req.user.id;
 
         await newFolder(Number(folderId), userId, foldername);
 
-        res.status(200).redirect("/mystorage");
+        res.status(200).redirect(req.get("referer"));
     } catch (err) {
         next(err);
     }
