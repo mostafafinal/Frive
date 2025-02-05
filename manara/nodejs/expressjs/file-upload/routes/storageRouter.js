@@ -1,9 +1,13 @@
 const { Router } = require("express");
 const storageController = require("../controllers/storageController");
+const fileController = require("../controllers//fileController");
 const {
     populateUser,
     populateMainFolder,
+    populateAllFolders,
 } = require("../middlewares/populateUserData");
+const upload = require("../middlewares/handleUploads");
+const { getFileById } = require("../models/queries");
 
 const storageRouter = Router();
 
@@ -38,5 +42,27 @@ storageRouter.post(
     "/deleteFolder/:folderId",
     storageController.deleteFolderPost
 );
+
+storageRouter.post(
+    "/uploadFile/:folderId",
+    upload.single("files"),
+    fileController.uploadPost
+);
+
+storageRouter.get(
+    "/file/:fileId",
+    populateUser,
+    populateAllFolders,
+    fileController.showFileGet
+);
+
+storageRouter.post(
+    "/updateFileName/:fileId",
+    fileController.updateFileNamePost
+);
+
+storageRouter.post("/deleteFile/:fileId", fileController.deleteFilePost);
+
+storageRouter.get("/download/:fileId", fileController.downloadFile);
 
 module.exports = storageRouter;

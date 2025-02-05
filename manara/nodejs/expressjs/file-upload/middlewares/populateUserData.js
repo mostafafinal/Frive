@@ -40,4 +40,24 @@ const populateMainFolder = async (req, res, next) => {
     }
 };
 
-module.exports = { populateUser, populateMainFolder };
+const populateAllFolders = async (req, res, next) => {
+    if (req.isAuthenticated()) {
+        const fileIcons = {
+            IMAGE: "/icons/image.svg",
+            VIDEO: "/icons/video.svg",
+            DOCUMENT: "/icons/doc.svg",
+            AUDIO: "/icons/audio.svg",
+            OTHER: "/icons/other.svg",
+        };
+        const { id } = req.user;
+
+        const allFolders = await getAllFolders(id);
+
+        res.locals.allFolders = allFolders;
+        res.locals.fileIcons = fileIcons;
+    }
+
+    next();
+};
+
+module.exports = { populateUser, populateMainFolder, populateAllFolders };

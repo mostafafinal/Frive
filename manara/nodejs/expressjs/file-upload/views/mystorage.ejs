@@ -25,7 +25,7 @@
                         method="post"
                         enctype="multipart/form-data">
                         <h3>Upload File</h3>
-                        <input type="file" name="files" id="files" multiple />
+                        <input type="file" name="files" id="files" />
                         <input type="submit" value="Upload" id="uploadFiles" />
                     </form>
                     <div class="uploading">
@@ -136,11 +136,11 @@
                     <div style="display: flex; margin: 1rem">
                         <a href="/mystorage/file/<%= file.id %>" class="folder">
                             <img src="<%= fileIcons[file.fileType] %>" alt="" />
-                            <%= file.name %>
+                            <%= file.displayName %>
                         </a>
                         <div class="edit">
                             <form
-                                action="/deleteFile/<%= file.id %>"
+                                action="/mystorage/deleteFile/<%= file.id %>"
                                 method="post">
                                 <input
                                     type="image"
@@ -150,7 +150,7 @@
                                     height="15" />
                             </form>
                             <form
-                                action="/updateFileName/<%= file.id %>"
+                                action="/mystorage/updateFileName/<%= file.id %>"
                                 method="post">
                                 <button id="openRename">
                                     <img src="/icons/rename.svg" alt="rename" />

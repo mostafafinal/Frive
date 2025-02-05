@@ -155,6 +155,73 @@ const deleteFolder = async (folderId) => {
     }
 };
 
+const uploadFile = async (fileMeta) => {
+    try {
+        await prisma.file.create({
+            data: {
+                name: fileMeta.originalname,
+                filePath: fileMeta.path,
+                fileUrl: fileMeta.url,
+                displayName: fileMeta.filename,
+                fileType: fileMeta.mimetype,
+                size: fileMeta.size,
+                folderId: fileMeta.folderId,
+            },
+        });
+    } catch (err) {
+        console.error(`DB ERROR\n${err}`);
+    }
+};
+
+const getFileById = async (fileId) => {
+    try {
+        if (!fileId) throw new Error("file id's not provided");
+
+        const file = await prisma.file.findFirst({
+            where: {
+                id: fileId,
+            },
+        });
+
+        return file;
+    } catch (err) {
+        console.error(`DB ERROR\n${err}`);
+    }
+};
+
+const updateFileName = async (fileId, newFileName) => {
+    try {
+        if (typeof fileId !== "number" || !newFileName)
+            throw new Error("either invalid file id or new name");
+
+        await prisma.file.update({
+            data: {
+                displayName: newFileName,
+            },
+            where: {
+                id: fileId,
+            },
+        });
+    } catch (err) {
+        console.error(`DB ERROR\n${err}`);
+    }
+};
+
+const deleteFile = async (fileId) => {
+    try {
+        if (!fileId || typeof fileId !== "number")
+            throw new Error("invalid file id");
+
+        await prisma.file.delete({
+            where: {
+                id: fileId,
+            },
+        });
+    } catch (err) {
+        console.error(`DB ERROR\n${err}`);
+    }
+};
+
 module.exports = {
     findUserByEmail,
     addUser,
@@ -166,4 +233,8 @@ module.exports = {
     newFolder,
     updateFolderName,
     deleteFolder,
+    uploadFile,
+    getFileById,
+    updateFileName,
+    deleteFile,
 };

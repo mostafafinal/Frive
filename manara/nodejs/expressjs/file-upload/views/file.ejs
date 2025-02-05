@@ -36,7 +36,7 @@
                 <p><%= parseFloat(file.size / 1048576).toFixed(2) %> MB</p>
             </div>
             <div>
-                <a href="<%= file.fileUrl %>" download="<%= file.name %>" target="_blank" class="buttonType">Download</a>
+                <a href="/mystorage/download/<%= file.id %>" target="_blank" class="buttonType">Download</a>
             </div>
         </div>
     </div>
