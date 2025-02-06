@@ -1,4 +1,5 @@
 const prisma = require("../config/prismaClient");
+const supabase = require("../config/supabase");
 
 const findUserByEmail = async (userEmail) => {
     try {
@@ -157,11 +158,20 @@ const deleteFolder = async (folderId) => {
 
 const uploadFile = async (fileMeta) => {
     try {
+        const { error, data } = await supabase.storage
+            .from("cloudiaFiles")
+            .upload(`uploads/${fileMeta.originalname}`, fileMeta.buffer);
+
+        if (error) {
+            console.log(error);
+            return;
+        }
+
         await prisma.file.create({
             data: {
                 name: fileMeta.originalname,
-                filePath: fileMeta.path,
-                fileUrl: fileMeta.url,
+                filePath: `uploads/${fileMeta.originalname}`,
+                fileUrl: `https://aaxaiaypdmtmteoozqar.supabase.co/storage/v1/object/public/cloudiaFiles/uploads/${fileMeta.originalname}`,
                 displayName: fileMeta.filename,
                 fileType: fileMeta.mimetype,
                 size: fileMeta.size,
@@ -207,10 +217,28 @@ const updateFileName = async (fileId, newFileName) => {
     }
 };
 
-const deleteFile = async (fileId) => {
+const downloadFile = async (filePath) => {
+    if (!filePath || typeof filePath !== "string")
+        throw new Error("invalid file path");
+
+    const { data, error } = await supabase.storage
+        .from("cloudiaFiles")
+        .download(filePath);
+
+    if (error) throw new Error("failed to download file", error);
+
+    return data;
+};
+
+const deleteFile = async (fileId, filePath) => {
     try {
         if (!fileId || typeof fileId !== "number")
             throw new Error("invalid file id");
+
+        if (!filePath || typeof filePath !== "string")
+            throw new Error("invalid file id");
+
+        await supabase.storage.from("cloudiaFiles").remove([filePath]);
 
         await prisma.file.delete({
             where: {
@@ -236,5 +264,6 @@ module.exports = {
     uploadFile,
     getFileById,
     updateFileName,
+    downloadFile,
     deleteFile,
 };

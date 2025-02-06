@@ -5,6 +5,7 @@ const prisma = require("./config/prismaClient");
 const passport = require("passport");
 const indexRouter = require("./routes/indexRouter");
 const storageRouter = require("./routes/storageRouter");
+const { initializeSupaBuckect } = require("./config/supabase");
 
 /**
  * GENERAL SETUP

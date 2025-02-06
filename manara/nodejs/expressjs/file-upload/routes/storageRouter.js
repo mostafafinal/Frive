@@ -7,7 +7,6 @@ const {
     populateAllFolders,
 } = require("../middlewares/populateUserData");
 const upload = require("../middlewares/handleUploads");
-const { getFileById } = require("../models/queries");
 
 const storageRouter = Router();
 
@@ -63,6 +62,8 @@ storageRouter.post(
 
 storageRouter.post("/deleteFile/:fileId", fileController.deleteFilePost);
 
-storageRouter.get("/download/:fileId", fileController.downloadFile);
+storageRouter.post("/download", fileController.downloadFilePost);
+
+// storageRouter.get("/download/:fileId", fileController.downloadFile);
 
 module.exports = storageRouter;

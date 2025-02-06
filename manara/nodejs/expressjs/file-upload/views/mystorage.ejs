@@ -148,6 +148,11 @@
                                     alt="Delete"
                                     width="15"
                                     height="15" />
+                                <input
+                                    type="text"
+                                    name="filePath"
+                                    value="<%= file.filePath %>"
+                                    hidden />
                             </form>
                             <form
                                 action="/mystorage/updateFileName/<%= file.id %>"

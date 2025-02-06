@@ -2,20 +2,22 @@ const {
     uploadFile,
     getFileById,
     updateFileName,
+    downloadFile,
     deleteFile,
 } = require("../models/queries");
 const hanldeFileType = require("../helpers/handleFileType");
 
 const uploadPost = async (req, res, next) => {
     try {
+        if (!req.file) throw new Error("no file's been provided");
+
         const fileMeta = {
             ...req.file,
-            filename: req.file.filename.replace(/\.[^/.]+$/, ""),
-            url: "/mystorage/file/",
+            filename: req.file.originalname.replace(/\.[^/.]+$/, ""),
             mimetype: hanldeFileType(req.file.mimetype),
             folderId: Number(req.params.folderId),
         };
-        console.log(fileMeta);
+
         await uploadFile(fileMeta);
 
         res.redirect(req.get("referer"));
@@ -53,13 +55,38 @@ const updateFileNamePost = async (req, res, next) => {
     }
 };
 
+const downloadFilePost = async (req, res, next) => {
+    try {
+        if (!req.isAuthenticated())
+            throw new Error("your're not authenticated");
+
+        const { filePath } = req.body;
+
+        const file = await downloadFile(filePath);
+
+        const buffer = Buffer.from(await file.arrayBuffer());
+
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${filePath.split("/").pop()}"`
+        );
+        res.setHeader("Content-Type", file.type);
+        res.setHeader("Content-Length", buffer.length);
+
+        res.send(buffer);
+    } catch (err) {
+        next(err);
+    }
+};
+
 const deleteFilePost = async (req, res, next) => {
     try {
         if (!req.isAuthenticated()) throw new Error("user's not authenticated");
 
         const { fileId } = req.params;
-
-        await deleteFile(Number(fileId));
+        const { filePath } = req.body;
+        console.log(filePath);
+        await deleteFile(Number(fileId), filePath);
 
         res.redirect(req.get("referer"));
     } catch (err) {
@@ -67,25 +94,25 @@ const deleteFilePost = async (req, res, next) => {
     }
 };
 
-const downloadFile = async (req, res, next) => {
-    try {
-        if (!req.isAuthenticated())
-            throw new Error("your're not authenticated");
+// const downloadFile = async (req, res, next) => {
+//     try {
+//         if (!req.isAuthenticated())
+//             throw new Error("your're not authenticated");
 
-        const file = await getFileById(Number(req.params.fileId));
+//         const file = await getFileById(Number(req.params.fileId));
 
-        res.download(file.filePath, (err) => {
-            if (err) return next(err);
-        });
-    } catch (err) {
-        next(err);
-    }
-};
+//         res.download(file.filePath, (err) => {
+//             if (err) return next(err);
+//         });
+//     } catch (err) {
+//         next(err);
+//     }
+// };
 
 module.exports = {
     uploadPost,
     showFileGet,
     updateFileNamePost,
+    downloadFilePost,
     deleteFilePost,
-    downloadFile,
 };
