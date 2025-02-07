@@ -141,6 +141,26 @@ const updateFolderName = async (folderId, newFolderName) => {
     });
 };
 
+const moveFolder = async (newFolderId, currFolderId) => {
+    try {
+        if (!newFolderId || !currFolderId)
+            throw new Error("invalid new or current folder id");
+        if (typeof newFolderId !== "number" || typeof currFolderId !== "number")
+            throw new Error("invalid new or current folder id");
+
+        await prisma.folder.update({
+            data: {
+                parentId: newFolderId,
+            },
+            where: {
+                id: currFolderId,
+            },
+        });
+    } catch (err) {
+        console.error(`DB ERROR\n${err}`);
+    }
+};
+
 const deleteFolder = async (folderId) => {
     try {
         if (!folderId || typeof folderId !== "number")
@@ -217,6 +237,26 @@ const updateFileName = async (fileId, newFileName) => {
     }
 };
 
+const moveFile = async (folderId, fileId) => {
+    try {
+        if (!folderId || !fileId) throw new Error("invalid folder or file id");
+        if (typeof folderId !== "number" || typeof fileId !== "number")
+            throw new Error("invalid folder or file id");
+
+        await prisma.file.update({
+            data: {
+                folderId: folderId,
+            },
+
+            where: {
+                id: fileId,
+            },
+        });
+    } catch (err) {
+        console.error(`DB ERROR\n${err}`);
+    }
+};
+
 const downloadFile = async (filePath) => {
     if (!filePath || typeof filePath !== "string")
         throw new Error("invalid file path");
@@ -260,10 +300,12 @@ module.exports = {
     openFolderById,
     newFolder,
     updateFolderName,
+    moveFolder,
     deleteFolder,
     uploadFile,
     getFileById,
     updateFileName,
+    moveFile,
     downloadFile,
     deleteFile,
 };

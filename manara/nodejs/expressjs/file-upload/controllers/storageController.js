@@ -3,6 +3,7 @@ const {
     openFolderById,
     newFolder,
     updateFolderName,
+    moveFolder,
     deleteFolder,
 } = require("../models/queries");
 
@@ -80,6 +81,21 @@ const updateFolderNamePost = async (req, res, next) => {
     }
 };
 
+const moveFolderPost = async (req, res, next) => {
+    try {
+        if (!req.isAuthenticated()) throw new Error("user's not authenticated");
+
+        const { newFolderId } = req.body;
+        const { currFolderId } = req.params;
+
+        await moveFolder(Number(newFolderId), Number(currFolderId));
+
+        res.redirect(req.get("referer"));
+    } catch (err) {
+        next(err);
+    }
+};
+
 const deleteFolderPost = async (req, res, next) => {
     try {
         const { folderId } = req.params;
@@ -97,5 +113,6 @@ module.exports = {
     openFolderGet,
     createFolderPost,
     updateFolderNamePost,
+    moveFolderPost,
     deleteFolderPost,
 };

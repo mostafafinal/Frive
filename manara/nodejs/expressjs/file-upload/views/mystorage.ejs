@@ -110,13 +110,13 @@
                                 </div>
                             </form>
                             <form
-                                action="/updateFolderLocation/<%= folder.id %>"
+                                action="/mystorage/updateFolderLocation/<%= folder.id %>"
                                 method="post">
                                 <button id="openMove">
                                     <img src="/icons/move.svg" alt="move" />
                                 </button>
                                 <div class="move_box" style="display: none">
-                                    <select name="newParentId" id="newParentId">
+                                    <select name="newFolderId" id="newParentId">
                                         <% locals.allFolders.forEach(fold => {
                                         %> <% if(fold.id !== folder.id) { %>
                                         <option value="<%= fold.id %>">
@@ -171,7 +171,7 @@
                                 </div>
                             </form>
                             <form
-                                action="/updateFileLocation/<%= file.id %>"
+                                action="/mystorage/updateFileLocation/<%= file.id %>"
                                 method="post">
                                 <button id="openMove">
                                     <img src="/icons/move.svg" alt="move" />

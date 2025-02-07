@@ -2,6 +2,7 @@ const {
     uploadFile,
     getFileById,
     updateFileName,
+    moveFile,
     downloadFile,
     deleteFile,
 } = require("../models/queries");
@@ -55,6 +56,19 @@ const updateFileNamePost = async (req, res, next) => {
     }
 };
 
+const moveFilePost = async (req, res, next) => {
+    try {
+        const { newFolderId } = req.body;
+        const { fileId } = req.params;
+
+        await moveFile(Number(newFolderId), Number(fileId));
+
+        res.redirect(req.get("referer"));
+    } catch (err) {
+        next(err);
+    }
+};
+
 const downloadFilePost = async (req, res, next) => {
     try {
         if (!req.isAuthenticated())
@@ -85,7 +99,7 @@ const deleteFilePost = async (req, res, next) => {
 
         const { fileId } = req.params;
         const { filePath } = req.body;
-        console.log(filePath);
+
         await deleteFile(Number(fileId), filePath);
 
         res.redirect(req.get("referer"));
@@ -113,6 +127,7 @@ module.exports = {
     uploadPost,
     showFileGet,
     updateFileNamePost,
+    moveFilePost,
     downloadFilePost,
     deleteFilePost,
 };

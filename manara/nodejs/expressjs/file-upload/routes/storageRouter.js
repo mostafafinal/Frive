@@ -38,6 +38,11 @@ storageRouter.post(
 );
 
 storageRouter.post(
+    "/updateFolderLocation/:currFolderId",
+    storageController.moveFolderPost
+);
+
+storageRouter.post(
     "/deleteFolder/:folderId",
     storageController.deleteFolderPost
 );
@@ -59,6 +64,8 @@ storageRouter.post(
     "/updateFileName/:fileId",
     fileController.updateFileNamePost
 );
+
+storageRouter.post("/updateFileLocation/:fileId", fileController.moveFilePost);
 
 storageRouter.post("/deleteFile/:fileId", fileController.deleteFilePost);
 
