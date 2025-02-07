@@ -1,10 +1,6 @@
 const { Router } = require("express");
 const indexController = require("../controllers/indexController");
 const passport = require("passport");
-const {
-    populateUser,
-    populateMainFolder,
-} = require("../middlewares/populateUserData");
 
 const indexRouter = Router();
 

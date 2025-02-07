@@ -53,14 +53,13 @@ app.use("/", indexRouter);
 /**
  * ERROR HANDLING
  */
-// app.use((req, res, next) => {
-//     throw new Error("OH NO!");
-// });
-
 app.use((err, req, res, next) => {
     console.error(err);
 
-    res.status(err.statusCode || 500).send(err.message);
+    res.status(err.statusCode || 500).render("serverError", {
+        status: err.statusCode || 500,
+        message: err.message,
+    });
 });
 
 app.listen(process.env.PORT, () =>

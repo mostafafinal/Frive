@@ -179,7 +179,7 @@ const deleteFolder = async (folderId) => {
 const uploadFile = async (fileMeta) => {
     try {
         const { error, data } = await supabase.storage
-            .from("cloudiaFiles")
+            .from(procces.env.BUCKET_NAME)
             .upload(`uploads/${fileMeta.originalname}`, fileMeta.buffer);
 
         if (error) {
@@ -191,7 +191,7 @@ const uploadFile = async (fileMeta) => {
             data: {
                 name: fileMeta.originalname,
                 filePath: `uploads/${fileMeta.originalname}`,
-                fileUrl: `https://aaxaiaypdmtmteoozqar.supabase.co/storage/v1/object/public/cloudiaFiles/uploads/${fileMeta.originalname}`,
+                fileUrl: `https://aaxaiaypdmtmteoozqar.supabase.co/storage/v1/object/public/${procces.env.BUCKET_NAME}/uploads/${fileMeta.originalname}`,
                 displayName: fileMeta.filename,
                 fileType: fileMeta.mimetype,
                 size: fileMeta.size,
@@ -262,7 +262,7 @@ const downloadFile = async (filePath) => {
         throw new Error("invalid file path");
 
     const { data, error } = await supabase.storage
-        .from("cloudiaFiles")
+        .from(procces.env.BUCKET_NAME)
         .download(filePath);
 
     if (error) throw new Error("failed to download file", error);
@@ -278,7 +278,7 @@ const deleteFile = async (fileId, filePath) => {
         if (!filePath || typeof filePath !== "string")
             throw new Error("invalid file id");
 
-        await supabase.storage.from("cloudiaFiles").remove([filePath]);
+        await supabase.storage.from(procces.env.BUCKET_NAME).remove([filePath]);
 
         await prisma.file.delete({
             where: {
