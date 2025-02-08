@@ -1,4 +1,4 @@
-const hanldeFileType = (file) => {
+const hanldeFileType = file => {
     const fileTypes = [
         "FOLDER",
         "IMAGE",
@@ -9,7 +9,7 @@ const hanldeFileType = (file) => {
     ];
 
     const fType = fileTypes
-        .filter((type) => file.includes(type.toLowerCase()))
+        .filter(type => file.includes(type.toLowerCase()))
         .toString();
 
     return fType || "OTHER";

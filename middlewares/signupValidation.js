@@ -10,7 +10,7 @@ const signupValidation = [
         .isEmail()
         .withMessage("incorrect email format")
         .bail()
-        .custom(async (value) => {
+        .custom(async value => {
             const existedUser = await findUserByEmail(value);
 
             if (existedUser) throw new Error("user already existed");

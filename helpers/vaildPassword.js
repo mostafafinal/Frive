@@ -13,7 +13,7 @@ const validPassword = async (password, hashedPassword) => {
     }
 };
 
-const hashPassword = async (password) => {
+const hashPassword = async password => {
     try {
         if (!password) throw new Error("password not provided correctly");
 

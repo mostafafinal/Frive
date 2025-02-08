@@ -3,9 +3,8 @@ const session = require("express-session");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
 const prisma = require("./config/prismaClient");
 const passport = require("passport");
-const indexRouter = require("./routes/indexRouter");
-const storageRouter = require("./routes/storageRouter");
-const { initializeSupaBuckect } = require("./config/supabase");
+const methodOverride = require("method-override");
+const routes = require("./routes/index");
 
 /**
  * GENERAL SETUP
@@ -17,9 +16,8 @@ app.set("views", "views");
 app.set("view engine", "ejs");
 
 app.use(express.static("public"));
-
 app.use(express.urlencoded({ extended: true }));
-
+app.use(methodOverride("_method"));
 /**
  * SESSION SETUP
  */
@@ -47,8 +45,9 @@ app.use(passport.session());
 /**
  * Routes SETUP
  */
-app.use("/mystorage", storageRouter);
-app.use("/", indexRouter);
+
+app.use("/mystorage", routes.storage);
+app.use("/", routes.auth);
 
 /**
  * ERROR HANDLING

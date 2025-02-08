@@ -21,9 +21,10 @@
             <div class="dashboard">
                 <div>
                     <form
-                        action="/mystorage/uploadfile/<%= folderId %>"
+                        action="/mystorage/file/<%= folderId %>"
                         method="post"
-                        enctype="multipart/form-data">
+                        enctype="multipart/form-data"
+                    >
                         <h3>Upload File</h3>
                         <input type="file" name="files" id="files" />
                         <input type="submit" value="Upload" id="uploadFiles" />
@@ -37,7 +38,8 @@
                 <!-- Create folder with his parent folder id as a param -->
                 <form
                     action="/mystorage/createFolder/<%= folderId %>"
-                    method="post">
+                    method="post"
+                >
                     <h3>Create Folder</h3>
                     <label for="foldername">Folder Name</label>
                     <input
@@ -45,7 +47,8 @@
                         name="foldername"
                         id="foldername"
                         placeholder="e.g. my fancy folder"
-                        required />
+                        required
+                    />
                     <input type="submit" value="Create" />
                 </form>
                 <ul class="nav">
@@ -71,31 +74,36 @@
                 <h2>
                     <%= folderName === 'Main' ? 'My storage' : folderName %><img
                         src="/icons/folder.svg"
-                        alt="folder icon" />
+                        alt="folder icon"
+                    />
                 </h2>
                 <div class="foldersContainer">
                     <% locals.subfolders.forEach(folder => { %>
                     <div style="display: flex; margin: 1rem">
                         <a
                             href="/mystorage/folder/<%= folder.id %>"
-                            class="folder">
+                            class="folder"
+                        >
                             <img src="/icons/folder_open.svg" alt="" />
                             <%= folder.name %>
                         </a>
                         <div class="edit">
                             <form
-                                action="/mystorage/deleteFolder/<%= folder.id %>"
-                                method="post">
+                                action="/mystorage/folder/<%= folder.id %>?_method=DELETE"
+                                method="post"
+                            >
                                 <input
                                     type="image"
                                     src="/icons/delete.svg"
                                     alt="Delete"
                                     width="15"
-                                    height="15" />
+                                    height="15"
+                                />
                             </form>
                             <form
-                                action="/mystorage/updateFolderName/<%= folder.id %>"
-                                method="post">
+                                method="POST"
+                                action="/mystorage/folder/<%= folder.id %>/rename?_method=PUT"
+                            >
                                 <button id="openRename">
                                     <img src="/icons/rename.svg" alt="rename" />
                                 </button>
@@ -105,13 +113,15 @@
                                         name="newName"
                                         id="newName"
                                         value="<%= folder.name %>"
-                                        required />
+                                        required
+                                    />
                                     <input type="submit" value="Rename" />
                                 </div>
                             </form>
                             <form
-                                action="/mystorage/updateFolderLocation/<%= folder.id %>"
-                                method="post">
+                                action="/mystorage/folder/<%= folder.id %>/move?_method=PUT"
+                                method="post"
+                            >
                                 <button id="openMove">
                                     <img src="/icons/move.svg" alt="move" />
                                 </button>
@@ -140,23 +150,27 @@
                         </a>
                         <div class="edit">
                             <form
-                                action="/mystorage/deleteFile/<%= file.id %>"
-                                method="post">
+                                action="/mystorage/file/<%= file.id %>?_method=DELETE"
+                                method="post"
+                            >
                                 <input
                                     type="image"
                                     src="/icons/delete.svg"
                                     alt="Delete"
                                     width="15"
-                                    height="15" />
+                                    height="15"
+                                />
                                 <input
                                     type="text"
                                     name="filePath"
                                     value="<%= file.filePath %>"
-                                    hidden />
+                                    hidden
+                                />
                             </form>
                             <form
-                                action="/mystorage/updateFileName/<%= file.id %>"
-                                method="post">
+                                action="/mystorage/file/<%= file.id %>/rename?_method=PUT"
+                                method="post"
+                            >
                                 <button id="openRename">
                                     <img src="/icons/rename.svg" alt="rename" />
                                 </button>
@@ -166,13 +180,15 @@
                                         name="newFileName"
                                         id="newFileName"
                                         value="<%= file.name %>"
-                                        required />
+                                        required
+                                    />
                                     <input type="submit" value="Rename" />
                                 </div>
                             </form>
                             <form
-                                action="/mystorage/updateFileLocation/<%= file.id %>"
-                                method="post">
+                                action="/mystorage/file/<%= file.id %>/move?_method=PUT"
+                                method="post"
+                            >
                                 <button id="openMove">
                                     <img src="/icons/move.svg" alt="move" />
                                 </button>
@@ -211,7 +227,7 @@
             function addEvent(element) {
                 const sibling = element.nextElementSibling;
 
-                element.addEventListener("click", (e) => {
+                element.addEventListener("click", e => {
                     e.preventDefault();
 
                     if (sibling.style.display === "none") {
@@ -223,8 +239,8 @@
                 });
             }
 
-            btns.forEach((btn) => {
-                btn.forEach((bt) => {
+            btns.forEach(btn => {
+                btn.forEach(bt => {
                     addEvent(bt);
                 });
             });

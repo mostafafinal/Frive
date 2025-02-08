@@ -1,12 +1,11 @@
 const { Router } = require("express");
+const folderRouter = require("./folderRouter");
+const fileRouter = require("./fileRouter");
 const storageController = require("../controllers/storageController");
-const fileController = require("../controllers//fileController");
 const {
     populateUser,
     populateMainFolder,
-    populateAllFolders,
 } = require("../middlewares/populateUserData");
-const upload = require("../middlewares/handleUploads");
 
 const storageRouter = Router();
 
@@ -14,63 +13,13 @@ storageRouter.get(
     "/",
     populateUser,
     populateMainFolder,
-    storageController.mystorageGet
+    storageController.storageGet
 );
 
-storageRouter.get("/logout", (req, res, next) => {
-    req.logout((err) => {
-        if (err) return next(err);
+storageRouter.get("/logout", storageController.logOutGet);
 
-        req.session.destroy(() => res.redirect("/"));
-    });
-});
+storageRouter.use("/folder", populateUser, folderRouter);
 
-storageRouter.get("/folder/:id", populateUser, storageController.openFolderGet);
-
-storageRouter.post(
-    "/createFolder/:folderId",
-    storageController.createFolderPost
-);
-
-storageRouter.post(
-    "/updateFolderName/:folderId",
-    storageController.updateFolderNamePost
-);
-
-storageRouter.post(
-    "/updateFolderLocation/:currFolderId",
-    storageController.moveFolderPost
-);
-
-storageRouter.post(
-    "/deleteFolder/:folderId",
-    storageController.deleteFolderPost
-);
-
-storageRouter.post(
-    "/uploadFile/:folderId",
-    upload.single("files"),
-    fileController.uploadPost
-);
-
-storageRouter.get(
-    "/file/:fileId",
-    populateUser,
-    populateAllFolders,
-    fileController.showFileGet
-);
-
-storageRouter.post(
-    "/updateFileName/:fileId",
-    fileController.updateFileNamePost
-);
-
-storageRouter.post("/updateFileLocation/:fileId", fileController.moveFilePost);
-
-storageRouter.post("/deleteFile/:fileId", fileController.deleteFilePost);
-
-storageRouter.post("/download", fileController.downloadFilePost);
-
-// storageRouter.get("/download/:fileId", fileController.downloadFile);
+storageRouter.use("/file", fileRouter);
 
 module.exports = storageRouter;

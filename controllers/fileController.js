@@ -31,9 +31,9 @@ const showFileGet = async (req, res, next) => {
     try {
         if (!req.isAuthenticated()) throw new Error("you're not logged in");
 
-        const { fileId } = req.params;
+        const { id } = req.params;
 
-        const file = await getFileById(Number(fileId));
+        const file = await getFileById(Number(id));
 
         res.render("file.ejs", { file: file });
     } catch (err) {
@@ -45,10 +45,10 @@ const updateFileNamePost = async (req, res, next) => {
     try {
         if (!req.isAuthenticated()) throw new Error("user's not authenticated");
 
-        const { fileId } = req.params;
+        const { id } = req.params;
         const { newFileName } = req.body;
 
-        await updateFileName(Number(fileId), newFileName);
+        await updateFileName(Number(id), newFileName);
 
         res.redirect(req.get("referer"));
     } catch (err) {
@@ -59,9 +59,9 @@ const updateFileNamePost = async (req, res, next) => {
 const moveFilePost = async (req, res, next) => {
     try {
         const { newFolderId } = req.body;
-        const { fileId } = req.params;
+        const { id } = req.params;
 
-        await moveFile(Number(newFolderId), Number(fileId));
+        await moveFile(Number(newFolderId), Number(id));
 
         res.redirect(req.get("referer"));
     } catch (err) {
@@ -69,7 +69,7 @@ const moveFilePost = async (req, res, next) => {
     }
 };
 
-const downloadFilePost = async (req, res, next) => {
+const downloadFileGet = async (req, res, next) => {
     try {
         if (!req.isAuthenticated())
             throw new Error("your're not authenticated");
@@ -97,10 +97,10 @@ const deleteFilePost = async (req, res, next) => {
     try {
         if (!req.isAuthenticated()) throw new Error("user's not authenticated");
 
-        const { fileId } = req.params;
+        const { id } = req.params;
         const { filePath } = req.body;
 
-        await deleteFile(Number(fileId), filePath);
+        await deleteFile(Number(id), filePath);
 
         res.redirect(req.get("referer"));
     } catch (err) {
@@ -128,6 +128,6 @@ module.exports = {
     showFileGet,
     updateFileNamePost,
     moveFilePost,
-    downloadFilePost,
+    downloadFileGet,
     deleteFilePost,
 };
