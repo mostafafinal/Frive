@@ -1,8 +1,8 @@
 const express = require("express");
-const session = require("express-session");
-const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
-const prisma = require("./config/prismaClient");
-const passport = require("passport");
+// const session = require("express-session");
+// const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
+// const prisma = require("./config/prismaClient");
+// const passport = require("passport");
 const methodOverride = require("method-override");
 const routes = require("./routes/index");
 
@@ -21,26 +21,26 @@ app.use(methodOverride("_method"));
 /**
  * SESSION SETUP
  */
-const prismaStore = new PrismaSessionStore(prisma, {
-    checkPeriod: 2 * 60 * 1000,
-    dbRecordIdIsSessionId: true,
-    dbRecordIdFunction: undefined,
-});
+// const prismaStore = new PrismaSessionStore(prisma, {
+//     checkPeriod: 2 * 60 * 1000,
+//     dbRecordIdIsSessionId: true,
+//     dbRecordIdFunction: undefined,
+// });
 
-app.use(
-    session({
-        store: prismaStore,
-        secret: process.env.DATABASE_SECRET,
-        resave: true,
-        saveUninitialized: true,
-        cookie: { maxAge: 2 * 24 * 60 * 60 * 1000 },
-    })
-);
+// app.use(
+//     session({
+//         store: prismaStore,
+//         secret: process.env.DATABASE_SECRET,
+//         resave: true,
+//         saveUninitialized: true,
+//         cookie: { maxAge: 2 * 24 * 60 * 60 * 1000 },
+//     })
+// );
 
 /**
  * PASSPORT SETUP
  */
-app.use(passport.session());
+// app.use(passport.session());
 
 /**
  * Routes SETUP

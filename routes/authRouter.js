@@ -1,6 +1,7 @@
 const { Router } = require("express");
-const authController = require("../controllers/authController");
 const passport = require("passport");
+const authController = require("../controllers/authController");
+const signToken = require("../middlewares/signToken");
 
 const authRouter = Router();
 
@@ -14,10 +15,8 @@ authRouter.get("/login", authController.loginGet);
 
 authRouter.post(
     "/login",
-    passport.authenticate("local", {
-        failureRedirect: "/",
-        successRedirect: "/mystorage",
-    })
+    passport.authenticate("local", { session: false }),
+    signToken
 );
 
 module.exports = authRouter;

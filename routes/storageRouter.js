@@ -6,19 +6,25 @@ const {
     populateUser,
     populateMainFolder,
 } = require("../middlewares/populateUserData");
+const passport = require("passport");
 
 const storageRouter = Router();
 
 storageRouter.get(
     "/",
-    populateUser,
+    passport.authenticate("jwt", { session: false }),
     populateMainFolder,
+    populateUser,
     storageController.storageGet
 );
 
 storageRouter.get("/logout", storageController.logOutGet);
 
-storageRouter.use("/folder", populateUser, folderRouter);
+storageRouter.use(
+    "/folder",
+    passport.authenticate("jwt", { session: false }),
+    folderRouter
+);
 
 storageRouter.use("/file", fileRouter);
 

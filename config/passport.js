@@ -1,9 +1,12 @@
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
+const LocalStragey = require("passport-local").Strategy;
+const passportJWT = require("passport-jwt");
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 const { loginUser, findUserById } = require("../models/queries");
 const { validPassword } = require("../helpers/vaildPassword");
 
-const verifyCallback = async (username, password, cb) => {
+const verifyUserCredientials = async (username, password, cb) => {
     try {
         const user = await loginUser(username);
 
@@ -21,24 +24,27 @@ const verifyCallback = async (username, password, cb) => {
     }
 };
 
-const strategy = new LocalStrategy(verifyCallback);
+passport.use(new LocalStragey(verifyUserCredientials));
 
-passport.use(strategy);
+const opts = {
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET,
+};
 
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser(async (userId, done) => {
+const verifyUserToken = async (jwtPayload, done) => {
     try {
-        const user = await findUserById(userId);
+        const user = await findUserById(jwtPayload.id);
 
-        if (!user) {
-            throw new Error("User not existed");
-        }
+        if (!user) return done(null, false);
 
-        done(null, user);
+        return done(null, user);
     } catch (err) {
-        console.error(`Deserialize Error\n ${err}`);
+        console.error(err);
+
+        return done(null, false);
     }
-});
+};
+
+const jwtStrategy = new JWTStrategy(opts, verifyUserToken);
+
+passport.use(jwtStrategy);
