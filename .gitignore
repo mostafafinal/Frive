@@ -1,4 +1,8 @@
+#dirs
 node_modules
 uploads
+snippets
+
+# files
 .env
 package-lock.json
