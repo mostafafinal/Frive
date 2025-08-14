@@ -278,7 +278,7 @@ const deleteFile = async (fileId, filePath) => {
     if (!filePath || typeof filePath !== "string")
       throw new Error("invalid file id");
 
-    await supabase.storage.from(procces.env.BUCKET_NAME).remove([filePath]);
+    await supabase.storage.from(process.env.BUCKET_NAME).remove([filePath]);
 
     await prisma.file.delete({
       where: {
