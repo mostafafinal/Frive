@@ -35,7 +35,7 @@
                 <p>Type: <%= file.fileType %></p>    
                 <p><%= parseFloat(file.size / 1048576).toFixed(2) %> MB</p>
             </div>
-            <form action="/mystorage/download" method="post">
+            <form action="/mystorage/file/<%= file.id %>/download" method="get">
                 <input type="text" name="filePath" value="<%= file.filePath %>" hidden />
                 <input type="submit" class="buttonType" value="Download"/>
             </form>
