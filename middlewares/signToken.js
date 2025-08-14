@@ -18,7 +18,15 @@ const signToken = async (req, res, next) => {
             .setExpirationTime("1d")
             .sign(secretKey);
 
-        res.status(200).json({ token });
+        res.status(200).cookie("x-auth-token", token, {
+            maxAge: 1000 * 60 * 60 * 24,
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+            partitioned: true,
+        });
+
+        next();
     } catch (err) {
         next(err);
     }
