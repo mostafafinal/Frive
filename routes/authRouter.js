@@ -14,9 +14,10 @@ authRouter.post("/signup", authController.signupPost);
 authRouter.get("/login", authController.loginGet);
 
 authRouter.post(
-    "/login",
-    passport.authenticate("local", { session: false }),
-    signToken
+  "/login",
+  passport.authenticate("local", { session: false, failureRedirect: "/login" }),
+  signToken,
+  (req, res) => res.redirect("/mystorage")
 );
 
 module.exports = authRouter;

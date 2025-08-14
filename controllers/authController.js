@@ -4,44 +4,44 @@ const signupValidation = require("../middlewares/signupValidation");
 const { hashPassword } = require("../helpers/vaildPassword");
 
 const indexGet = (req, res, next) => {
-    try {
-        res.render("index");
-    } catch (err) {
-        next(err);
-    }
+  try {
+    res.render("index");
+  } catch (err) {
+    next(err);
+  }
 };
 
 const signupGet = (req, res, next) => {
-    try {
-        res.render("signup");
-    } catch (err) {
-        next(err);
-    }
+  try {
+    res.render("signup");
+  } catch (err) {
+    next(err);
+  }
 };
 
 const signupPost = [
-    signupValidation,
-    async (req, res, next) => {
-        const errors = validationResult(req);
+  signupValidation,
+  async (req, res, next) => {
+    const errors = validationResult(req);
 
-        if (!errors.isEmpty()) {
-            return res.status(401).render("signup", { errors: errors.array() });
-        }
+    if (!errors.isEmpty()) {
+      return res.status(401).render("signup", { errors: errors.array() });
+    }
 
-        const { email, password } = req.body;
+    const { email, password } = req.body;
 
-        const hashedPassword = await hashPassword(password);
-        await db.addUser({ email, hashedPassword });
+    const hashedPassword = await hashPassword(password);
+    await db.addUser({ email, hashedPassword });
 
-        res.redirect("login");
-    },
+    res.redirect("login");
+  },
 ];
 
 const loginGet = (req, res, next) => {
-    try {
-        res.render("login");
-    } catch (err) {
-        next(err);
-    }
+  try {
+    res.render("login");
+  } catch (err) {
+    next(err);
+  }
 };
 module.exports = { indexGet, signupGet, loginGet, signupPost };

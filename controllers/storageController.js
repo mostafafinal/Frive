@@ -1,21 +1,24 @@
 const storageGet = (req, res, next) => {
-    try {
-        if (!req.isAuthenticated()) throw new Error("user's not authenticated");
+  try {
+    if (!req.isAuthenticated()) throw new Error("user's not authenticated");
 
-        res.render("mystorage");
-    } catch (err) {
-        res.redirect("/");
+    res.render("mystorage");
+  } catch (err) {
+    res.redirect("/");
 
-        next(err);
-    }
+    next(err);
+  }
 };
 
 const logOutGet = (req, res, next) => {
-    req.logout(err => {
-        if (err) return next(err);
+  res.clearCookie("x-auth-token", {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    partitioned: true,
+  });
 
-        req.session.destroy(() => res.redirect("/"));
-    });
+  res.status(200).redirect("/");
 };
 
 module.exports = { storageGet, logOutGet };

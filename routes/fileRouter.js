@@ -5,9 +5,9 @@ const upload = require("../middlewares/handleUploads");
 const fileRouter = Router();
 
 fileRouter.post(
-    "/:folderId",
-    upload.single("files"),
-    fileController.uploadPost
+  "/:folderId",
+  upload.single("files"),
+  fileController.uploadPost
 );
 
 fileRouter.get("/:id", fileController.showFileGet);

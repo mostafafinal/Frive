@@ -1,4 +1,4 @@
 const auth = require("./authRouter");
-const storage = require("./storageRouter");
+const storage = require("../routes/storageRouter");
 
 module.exports = { auth, storage };
